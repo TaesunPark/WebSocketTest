@@ -6,6 +6,25 @@
 </head>
 <body>
 </body>
-<script src = "hello.js">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    // JavaScript로 WebSocket 클라이언트 구현 예제
+    const socket = new SockJS('http://localhost:8080/ws');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, (frame) => {
+        stompClient.subscribe('/topic/messages', (message) => {
+            // 메시지를 받았을 때 처리 로직
+            const msg = JSON.parse(message.body);
+            console.log(msg);
+        });
+    });
+
+    // 메시지 전송
+    function sendMessage(message) {
+        stompClient.send("/app/chat", {}, JSON.stringify(message));
+    }
 </script>
+
 </html>
